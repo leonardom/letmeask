@@ -1,4 +1,4 @@
-# NLW Agents Server
+# Let me Ask Backend
 
 This is a simple Fastify + Drizzle ORM server for managing rooms, using PostgreSQL as the database. The project is written in TypeScript and uses Zod for schema validation and Biome for code formatting/linting.
 
