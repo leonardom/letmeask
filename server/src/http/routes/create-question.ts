@@ -22,7 +22,7 @@ export const createRoomQuestionRoute: FastifyPluginCallbackZod = (app) => {
       const { roomId } = request.params
       const { question } = request.body
       const embeddings = await generateEmbeddings(question)
-      const embeddingsAsString = `[${embeddings.join(',')}]`
+      const embeddingsAsString = JSON.stringify(embeddings)
       
       const chunks = await db
         .select({
