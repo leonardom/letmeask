@@ -15,6 +15,13 @@
       "when": 1752088067570,
       "tag": "0001_loving_inertia",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752132227831,
+      "tag": "0002_cute_puma",
+      "breakpoints": true
     }
   ]
 }

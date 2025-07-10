@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type {
   CreateQuestionRequest,
   CreateQuestionResponse,
+  GetQuestionsReponse,
 } from './types/questions'
 
 export function useCreateQuestionMutation(roomId: string) {
@@ -22,8 +23,48 @@ export function useCreateQuestionMutation(roomId: string) {
       const result: CreateQuestionResponse = await response.json()
       return result
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['get-questions', roomId] })
+    onMutate({ question }) {
+      const questions = queryClient.getQueryData<GetQuestionsReponse>([
+        'get-questions',
+        roomId,
+      ])
+      const newQuestion = {
+        id: crypto.randomUUID(),
+        question,
+        answer: null,
+        createdAt: new Date().toISOString(),
+        pending: true,
+      }
+      queryClient.setQueryData<GetQuestionsReponse>(
+        ['get-questions', roomId],
+        [newQuestion, ...(questions ?? [])]
+      )
+
+      return { newQuestion, questions }
+    },
+    onError(_error, _variables, context) {
+      if (context?.questions) {
+        queryClient.setQueryData<GetQuestionsReponse>(
+          ['get-questions', roomId],
+          context.questions
+        )
+      }
+    },
+    onSuccess(data, _variables, context) {
+      queryClient.setQueryData<GetQuestionsReponse>(
+        ['get-questions', roomId],
+        (questions) => {
+          if (!(questions && context?.newQuestion)) {
+            return questions
+          }
+          return questions.map((question) => {
+            if (question.id === context.newQuestion.id) {
+              return { ...question, id: data.questionId, answer: data.answer, pending: false }
+            }
+            return question
+          })
+        }
+      )
     },
   })
 }

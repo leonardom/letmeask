@@ -2,7 +2,8 @@ export type Question = {
   id: string
   question: string
   answer: string | null
-  createdAt: string
+  createdAt: string,
+  pending?: boolean
 }
 
 export type GetQuestionsReponse = Question[]
@@ -13,4 +14,5 @@ export type CreateQuestionRequest = {
 
 export type CreateQuestionResponse = {
   questionId: string
+  answer: string | null
 }
